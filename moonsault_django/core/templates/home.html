@@ -1,13 +1,24 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
   <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-xl">
     <h1 class="text-xl font-bold mb-4">Items</h1>
     {% for item in items %}
       <div class="mb-4 p-4 shadow">
-        <input type="text" value="{{ item.text }}" hx-post="{% url 'update_text' pk=item.pk %}" hx-trigger="keyup changed delay:500ms" hx-target="#status-{{ item.pk }}" class="block w-full mb-2">
-        <input type="file" hx-post="{% url 'update_image' pk=item.pk %}" hx-trigger="change" hx-target="#status-{{ item.pk }}" class="block w-full mb-2">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <input type="text" name="text" value="{{ item.text }}" hx-post="{% url 'update_text' pk=item.pk %}" hx-trigger="keyup changed delay:500ms" hx-target="#status-{{ item.pk }}" hx-include="[name='csrfmiddlewaretoken']"
+{#               class="block w-full mb-2"#}
+               class="block w-full mb-2 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+        />
+
+        <img id="image-display-{{ item.pk }}" src="{% if item.image %}{{ item.image.url }}{% else %}{% static '/images/placeholder.png' %}{% endif %}" alt="Uploaded Image" class="mb-2 max-w-full h-auto">
+
+        <input type="file" name="image" hx-post="{% url 'update_image' pk=item.pk %}" hx-trigger="change" hx-target="#image-display-{{ item.pk }}" hx-include="[name='csrfmiddlewaretoken']" hx-swap="outerHTML" hx-encoding="multipart/form-data" class="block w-full mb-2">
+
         <span id="status-{{ item.pk }}"></span>
       </div>
     {% endfor %}
   </div>
 {% endblock %}
+

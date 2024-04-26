@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .models import Item
 
 def home(request):
@@ -25,4 +25,6 @@ def update_image(request, pk):
         item = get_object_or_404(Item, pk=pk)
         item.image = request.FILES.get('image')
         item.save()
-        return HttpResponse('Image updated successfully!', status=204)
+        return HttpResponse(f'<img id="image-display-{ pk }" src="{item.image.url}" alt="Uploaded Image" class="mb-2 max-w-full h-auto">')
+        # return JsonResponse({'imageUrl': item.image.url})
+        # return HttpResponse('Image updated successfully!', status=204)
