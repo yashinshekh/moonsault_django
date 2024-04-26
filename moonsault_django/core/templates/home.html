@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1 class="text-3xl font-bold underline">
-    Hello world!
-  </h1>
-  <p class="bg-dark">Green</p>
+  <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-xl">
+    <h1 class="text-xl font-bold mb-4">Items</h1>
+    {% for item in items %}
+      <div class="mb-4 p-4 shadow">
+        <input type="text" value="{{ item.text }}" hx-post="{% url 'update_text' pk=item.pk %}" hx-trigger="keyup changed delay:500ms" hx-target="#status-{{ item.pk }}" class="block w-full mb-2">
+        <input type="file" hx-post="{% url 'update_image' pk=item.pk %}" hx-trigger="change" hx-target="#status-{{ item.pk }}" class="block w-full mb-2">
+        <span id="status-{{ item.pk }}"></span>
+      </div>
+    {% endfor %}
+  </div>
 {% endblock %}
